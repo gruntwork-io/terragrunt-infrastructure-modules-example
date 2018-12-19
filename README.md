@@ -1,3 +1,5 @@
+[![Maintained by Gruntwork.io](https://img.shields.io/badge/maintained%20by-gruntwork.io-%235849a6.svg)](https://gruntwork.io/?ref=repo_terragrunt-infra-modules-example)
+
 # Example infrastructure-modules for Terragrunt
 
 This repo, along with the [terragrunt-infrastructure-live-example 
