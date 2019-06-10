@@ -7,12 +7,15 @@
 # ---------------------------------------------------------------------------------------------------------------------
 
 provider "aws" {
-  region = "${var.aws_region}"
+  region = var.aws_region
 }
 
 terraform {
   # The configuration for this backend will be filled in by Terragrunt
   backend "s3" {}
+
+  # The latest version of Terragrunt (v0.19.0 and above) requires Terraform 0.12.0 or above.
+  required_version = ">= 0.12.0"
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -23,13 +26,13 @@ resource "aws_db_instance" "mysql" {
   engine         = "mysql"
   engine_version = "5.6.41"
 
-  name     = "${var.name}"
-  username = "${var.master_username}"
-  password = "${var.master_password}"
+  name     = var.name
+  username = var.master_username
+  password = var.master_password
 
-  instance_class    = "${var.instance_class}"
-  allocated_storage = "${var.allocated_storage}"
-  storage_type      = "${var.storage_type}"
+  instance_class    = var.instance_class
+  allocated_storage = var.allocated_storage
+  storage_type      = var.storage_type
 
   # TODO: DO NOT COPY THIS SETTING INTO YOUR PRODUCTION DBS. It's only here to make testing this code easier!
   skip_final_snapshot = true
