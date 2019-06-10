@@ -24,34 +24,34 @@ you are interested in battle-tested, production-ready Terraform code, check out 
 
 ## How do you use these modules?
 
-To use a module, create a  `terraform.tfvars` file that specifies the module you want to use as well as values for the
+To use a module, create a  `terragrunt.hcl` file that specifies the module you want to use as well as values for the
 input variables of that module:
 
 ```hcl
 # Use Terragrunt to download the module code
-terragrunt = {
-  terraform {
-    source = "git::git@github.com:gruntwork-io/terragrunt-infrastructure-modules-example.git//path/to/module?ref=v0.0.1"
-  }
+terraform {
+  source = "git::git@github.com:gruntwork-io/terragrunt-infrastructure-modules-example.git//path/to/module?ref=v0.0.1"
 }
 
 # Fill in the variables for that module
-foo = "bar"
-baz = 3
+inputs = {
+  foo = "bar"
+  baz = 3
+}
 ```
 
 (*Note: the double slash (`//`) in the `source` URL is intentional and required. It's part of Terraform's Git syntax 
 for [module sources](https://www.terraform.io/docs/modules/sources.html).*)
 
 You then run [Terragrunt](https://github.com/gruntwork-io/terragrunt), and it will download the source code specified 
-in the `source` URL into a temporary folder, copy your `terraform.tfvars` file into that folder, and run your Terraform 
+in the `source` URL into a temporary folder, copy your `terragrunt.hcl` file into that folder, and run your Terraform 
 command in that folder: 
 
 ```
 > terragrunt apply
-[terragrunt] Reading Terragrunt config file at terraform.tfvars
+[terragrunt] Reading Terragrunt config file at terragrunt.hcl
 [terragrunt] Downloading Terraform configurations from git::git@github.com:gruntwork-io/terragrunt-infrastructure-modules-example.git//path/to/module?ref=v0.0.1
-[terragrunt] Copying files from . into /tmp/terragrunt/infrastructure-modules/path/to/module
+[terragrunt] Copying files from . into .terragrunt-cache
 [terragrunt] Running command: terraform apply
 [...]
 ```
@@ -73,7 +73,7 @@ Here is how to test out changes to a module locally:
 
 1. `git clone` this repo.
 1. Update the code as necessary.
-1. Go into the folder where you have the `terraform.tfvars` file that uses a module from this repo (preferably for a 
+1. Go into the folder where you have the `terragrunt.hcl` file that uses a module from this repo (preferably for a 
    dev or staging environment!).
 1. Run `terragrunt plan --terragrunt-source <LOCAL_PATH>`, where `LOCAL_PATH` is the path to your local checkout of
    the module code. 
@@ -97,6 +97,6 @@ When you're done testing the changes locally, here is how you release a new vers
     git tag -a v0.0.2 -m "tag message"
     git push --follow-tags
     ```
-1. Now you can use the new Git tag (e.g. `v0.0.2`) in the `ref` attribute of the `source` URL in `terraform.tfvars`.
+1. Now you can use the new Git tag (e.g. `v0.0.2`) in the `ref` attribute of the `source` URL in `terragrunt.hcl`.
 1. Run `terragrunt plan`.
 1. If the plan looks good, run `terragrunt apply`.   
