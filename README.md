@@ -91,3 +91,13 @@ When you're done testing the changes locally, here is how you release a new vers
 1. Now you can use the new Git tag (e.g. `v0.0.2`) in the `ref` attribute of the `source` URL in `terragrunt.hcl`.
 1. Run `terragrunt plan`.
 1. If the plan looks good, run `terragrunt apply`.
+
+## Monorepo vs. polyrepo
+
+This example shows live modules in a "monorepo" - several modules in a single repository. There are [benefits and drawbacks to using a monorepo](https://github.com/joelparkerhenderson/monorepo_vs_polyrepo) vs. using a "polyrepo" - one module per repository. Which you choose depends on your tooling, how you build/test Terraform modules, and so on.
+
+For example, if you have a CI pipeline that automates testing on Terraform modules, a monorepo will either need to test all the modules in the repo for any change; or have tooling that supports only testing things that changed. A polyrepo scenario doesn't require such tooling.
+
+On the other hand, if you have several modules that get developed and released together, it may be easier to manage them in a monorepo rather than spreading them across several repositories and build pipelines.
+
+Whichever you choose - monorepo or polyrepo - the [live repo](https://github.com/gruntwork-io/terragrunt-infrastructure-live-example) will consume the modules in the same way: a reference to a Git release tag in a `terragrunt.hcl` file.
