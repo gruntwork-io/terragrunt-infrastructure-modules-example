@@ -94,7 +94,7 @@ When you're done testing the changes locally, here is how you release a new vers
 
 ## Monorepo vs. polyrepo
 
-This example shows live modules in a "monorepo" - several modules in a single repository. There are [benefits and drawbacks to using a monorepo](https://github.com/joelparkerhenderson/monorepo_vs_polyrepo) vs. using a "polyrepo" - one module per repository. Which you choose depends on your tooling, how you build/test Terraform modules, and so on.
+This repo is an example of a *monorepo*, where you have multiple modules in a single repository. There are [benefits and drawbacks to using a monorepo](https://github.com/joelparkerhenderson/monorepo_vs_polyrepo) vs. using a "polyrepo" - one module per repository. Which you choose depends on your tooling, how you build/test Terraform modules, and so on.
 
 For example, if you have a CI pipeline that automates testing on Terraform modules, a monorepo will either need to test all the modules in the repo for any change; or have tooling that supports only testing things that changed. A polyrepo scenario doesn't require such tooling.
 
