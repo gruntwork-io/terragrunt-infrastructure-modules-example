@@ -100,7 +100,7 @@ This repo is an example of a *monorepo*, where you have multiple modules in a si
 
 * **Easier to make global changes across the entire codebase.** For example, applying a critical security fix or upgrading everything to a new version of Terraform can happen in one logical commit.
 * **Easier to search across the entire codebase.** You can search through all the module code using a standard text editor or file searching utility just with one repo checked out.
-* **Simpler continuous integration across modules.** All your code is tested and versioned together. This reduces the chance of issues arising that would cause problems across modules.
+* **Simpler continuous integration across modules.** All your code is tested and versioned together. This reduces the chance of _late integration_ issues arising from out-of-date module-dependencies.
 * **Single repo and build pipeline to manage.** Permissions, pull requests, etc. all happen in one spot. Everything validates and tests together so you can see any failures in one spot.
 
 ### Disadvantages of a monorepo for Terraform modules
