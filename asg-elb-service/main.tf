@@ -10,14 +10,18 @@
 
 provider "aws" {
   region = var.aws_region
+
+  # Live modules pin exact provider version; generic modules let consumers pin the version.
+  version = "= 2.40.0"
 }
 
 terraform {
   # The configuration for this backend will be filled in by Terragrunt
   backend "s3" {}
 
+  # Live modules pin exact Terraform version; generic modules let consumers pin the version.
   # The latest version of Terragrunt (v0.19.0 and above) requires Terraform 0.12.0 or above.
-  required_version = ">= 0.12.0"
+  required_version = "= 0.12.17"
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -153,7 +157,7 @@ resource "aws_security_group_rule" "elb_allow_http_inbound" {
   to_port           = var.elb_port
   protocol          = "tcp"
   cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = "${aws_security_group.elb.id}"
+  security_group_id = aws_security_group.elb.id
 }
 
 resource "aws_security_group_rule" "elb_allow_all_outbound" {
