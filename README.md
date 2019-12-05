@@ -100,3 +100,39 @@ When you're done testing the changes locally, here is how you release a new vers
 1. Now you can use the new Git tag (e.g. `v0.0.2`) in the `ref` attribute of the `source` URL in `terragrunt.hcl`.
 1. Run `terragrunt plan`.
 1. If the plan looks good, run `terragrunt apply`.   
+
+## Monorepo vs. polyrepo
+
+This repo is an example of a *monorepo*, where you have multiple modules in a single repository. There are benefits and drawbacks to using a monorepo vs. using a *polyrepo* - one module per repository. Which you choose depends on your tooling, how you build/test Terraform modules, and so on. Regardless, the [live repo](https://github.com/gruntwork-io/terragrunt-infrastructure-live-example) will consume the modules in the same way: a reference to a Git release tag in a `terragrunt.hcl` file.
+
+### Advantages of a monorepo for Terraform modules
+
+* **Easier to make global changes across the entire codebase.** For example, applying a critical security fix or upgrading everything to a new version of Terraform can happen in one logical commit.
+* **Easier to search across the entire codebase.** You can search through all the module code using a standard text editor or file searching utility just with one repo checked out.
+* **Simpler continuous integration across modules.** All your code is tested and versioned together. This reduces the chance of _late integration_ issues arising from out-of-date module-dependencies.
+* **Single repo and build pipeline to manage.** Permissions, pull requests, etc. all happen in one spot. Everything validates and tests together so you can see any failures in one spot.
+
+### Disadvantages of a monorepo for Terraform modules
+
+* **Harder to keep changes isolated.** While you're modifying module `foo`, you also have to think through whether this will affect module `bar`.
+* **Ever increasing testing time.** The simple approach is to run all tests after every commit, but as the monorepo grows, this gets slower and slower (and more brittle).
+* **No dependency management system.** To only run a subset of the tests or otherwise validate only changed modules, you need a way to tell which modules were affected by which commits. Unfortunately, Terraform has no first-class dependency management system, so there's no way to know that a code change in a file in module `foo` won't affect module `bar`. You have to build custom tooling that figures this out based on heuristics (brittle) or try to integrate Terraform with dependency management / monorepo tooling like [bazel](https://bazel.build/) (lots of work).
+* **Doesn't work with the Terraform Private Registry.** Private registries (part of Terraform Enterprise and Terraform Cloud) require one module per repo.
+* **No feature toggle support.** Terraform doesn't support feature toggles, which are often critical for making large scale changes in a monorepo.
+* **Release versions change even if module code didn't change.** A new "release" of a monorepo involves tagging the repo with a new version. Even if only one module changed, all the modules effectively get a new version.
+
+### Advantages of one-repo-per-module
+
+* **Easier to keep changes isolated.** You mostly only have to think about the one module/repo you're changing rather than how it affects other modules.
+* **Works with the Terraform Private Registry.** Private registries (part of Terraform Enterprise and Terraform Cloud) can list modules in a one-repo-per-module format if you [follow their module structure](https://www.terraform.io/docs/modules/index.html#standard-module-structure) and [repository naming conventions](https://www.terraform.io/docs/registry/modules/publish.html#requirements).
+* **Testing is faster and isolated.** When you run tests, it's just tests for this one module, so no extra tooling is necessary to keep tests fast.
+* **Easier to detect individual module changes.** With only one module in a repo, there's no guessing at which module changed as releases are published.
+
+### Disdvantages of one-repo-per-module
+
+* **Harder to make global changes.** Changes across repos require lots of checkouts, separate commits and pull requests, and an updated release per module. This may need to be done in a specific order based on depedency graphs. This may take a lot of time in a large organization, which is problematic when dealing with security issues.
+* **Harder to search across the codebase.** Searches require checking out all the repos or having tooling (e.g., GitHub or Azure DevOps) that allows searching across repositories remotely.
+* **No continuous integration across modules.** You might make a change in your module and the teams that depend on that module might not consume that change for a long time. When they do, they may find an incompatibility or other issue that could be hard to fix given the amount of time that's passed.
+* **Many repos and builds to manage.** Permissions, pull requests, build pipelines, test failures, etc. get managed in several places.
+* **Potential dependency graph problems.** It is possible to run into issues like "diamond dependencies" when using many modules together, though Terraform can avoid many of these issues since it can run different versions of the same dependency at the same time.
+* **Slower initialization.** Terraform downloads each dependency from scratch, so if one repo depends on modules from many other repos — or even the exact same module from the same repo, but used many times in your code — it will download that module every time it's used rather than just once.
