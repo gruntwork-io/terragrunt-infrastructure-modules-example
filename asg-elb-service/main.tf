@@ -11,11 +11,11 @@
 terraform {
   # Live modules pin exact Terraform version; generic modules let consumers pin the version.
   # The latest version of Terragrunt (v0.19.0 and above) requires Terraform 0.12.0 or above.
-  required_version = "= 0.12.17"
+  required_version = "= 0.12.29"
 
   # Live modules pin exact provider version; generic modules let consumers pin the version.
   required_providers {
-    aws = "= 2.40.0"
+    aws = "= 3.5.0"
   }
 }
 
@@ -25,7 +25,7 @@ terraform {
 
 resource "aws_autoscaling_group" "webserver_example" {
   launch_configuration = aws_launch_configuration.webserver_example.id
-  availability_zones   = data.aws_availability_zones.all.names
+  vpc_zone_identifier  = data.aws_subnet_ids.default.ids
 
   load_balancers    = [aws_elb.webserver_example.name]
   health_check_type = "ELB"
@@ -39,8 +39,6 @@ resource "aws_autoscaling_group" "webserver_example" {
     propagate_at_launch = true
   }
 }
-
-data "aws_availability_zones" "all" {}
 
 # ---------------------------------------------------------------------------------------------------------------------
 # CREATE THE LAUNCH CONFIGURATION
@@ -115,9 +113,9 @@ resource "aws_security_group_rule" "asg_allow_http_inbound" {
 # ---------------------------------------------------------------------------------------------------------------------
 
 resource "aws_elb" "webserver_example" {
-  name               = var.name
-  availability_zones = data.aws_availability_zones.all.names
-  security_groups    = [aws_security_group.elb.id]
+  name            = var.name
+  subnets         = data.aws_subnet_ids.default.ids
+  security_groups = [aws_security_group.elb.id]
 
   listener {
     lb_port           = var.elb_port
