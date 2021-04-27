@@ -8,11 +8,7 @@
 
 terraform {
   # Live modules pin exact Terraform version; generic modules let consumers pin the version.
-  # The latest version of Terragrunt (v0.27.0 and above) recommends Terraform 0.14.0 or above.
-  # This module is now only being tested with Terraform 0.15.x. However, to make upgrading easier, we are setting
-  # >= 0.12.26 as the version constraint, as that version should be forwards compatible with our code.
-  # This module is now only being tested with Terraform 0.15.x. However, to make upgrading easier, we are setting
-  # >= 0.12.26 as the version constraint, as that version should be forwards compatible with our code.
+  # The latest version of Terragrunt (v0.29.0 and above) recommends Terraform 0.15.0 or above.
   required_version = ">= 0.12.26"
 
   # Live modules pin exact provider version; generic modules let consumers pin the version.
