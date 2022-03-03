@@ -9,7 +9,7 @@ variable "name" {
 }
 
 variable "instance_type" {
-  description = "The type of EC2 Instnaces to run in the ASG (e.g. t2.micro)"
+  description = "The type of EC2 Instances to run in the ASG (e.g. t2.micro)"
   type        = string
 }
 
