@@ -8,12 +8,13 @@ you can use with [Terragrunt](https://github.com/gruntwork-io/terragrunt) to kee
 [Terraform](https://www.terraform.io) code DRY. For background information, check out the [Keep your Terraform code
 DRY](https://github.com/gruntwork-io/terragrunt#keep-your-terraform-code-dry) section of the Terragrunt documentation.
 
-This repo contains the following example code:
+This repo contains the following example modules:
 
-* [asg-elb-service](/asg-elb-service): An example of how to deploy an Auto Scaling Group (ASG) with an Elastic Load 
-  Balancer (ELB) in front of it. We run a dirt-simple "web server" on top of the ASG that always returns "Hello, World".
+* [asg-alb-service](/modules/asg-alb-service): An example of how to deploy an Auto Scaling Group (ASG) with an 
+  Application Load Balancer (ALB) in front of it. We run a dirt-simple "web server" on top of the ASG that always 
+  returns "Hello, World".
 
-* [mysql](/mysql): An example of how to deploy MySQL on top of Amazon's Relational Database Service (RDS).  
+* [mysql](/modules/mysql): An example of how to deploy MySQL on top of Amazon's Relational Database Service (RDS).  
 
 Note: This code is solely for demonstration purposes. This is not production-ready code, so use at your own risk. If 
 you are interested in battle-tested, production-ready Terraform code, check out [Gruntwork](http://www.gruntwork.io/).
@@ -24,13 +25,13 @@ you are interested in battle-tested, production-ready Terraform code, check out 
 
 ## How do you use these modules?
 
-To use a module, create a  `terragrunt.hcl` file that specifies the module you want to use as well as values for the
-input variables of that module:
+To use a module, create a  `terragrunt.hcl` file that specifies the module you want to use in the `source` URL as well 
+as values for the input variables of that module in the `inputs` block:
 
 ```hcl
 # Use Terragrunt to download the module code
 terraform {
-  source = "git::git@github.com:gruntwork-io/terragrunt-infrastructure-modules-example.git//path/to/module?ref=v0.0.1"
+  source = "git::git@github.com:gruntwork-io/terragrunt-infrastructure-modules-example.git//path/to/module?ref=<VERSION>"
 }
 
 # Fill in the variables for that module
@@ -50,7 +51,7 @@ command in that folder:
 ```
 > terragrunt apply
 [terragrunt] Reading Terragrunt config file at terragrunt.hcl
-[terragrunt] Downloading Terraform configurations from git::git@github.com:gruntwork-io/terragrunt-infrastructure-modules-example.git//path/to/module?ref=v0.0.1
+[terragrunt] Downloading Terraform configurations from git::git@github.com:gruntwork-io/terragrunt-infrastructure-modules-example.git//path/to/module?ref=<VERSION>
 [terragrunt] Copying files from . into .terragrunt-cache
 [terragrunt] Running command: terraform apply
 [...]
@@ -100,6 +101,16 @@ When you're done testing the changes locally, here is how you release a new vers
 1. Now you can use the new Git tag (e.g. `v0.0.2`) in the `ref` attribute of the `source` URL in `terragrunt.hcl`.
 1. Run `terragrunt plan`.
 1. If the plan looks good, run `terragrunt apply`.   
+
+## Folder structure
+
+This repo uses the following "standard" folder structure:
+
+- `modules`: Put module code into this folder.
+- `examples`: Put example code into this folder. These are examples of how to use the modules in the `modules` folder.
+  This is useful both for manual testing (you can manually run `tofu apply` on these examples) and automated testing
+  (as per the tests in the `test` folder, as described next).
+- `test`: Put test code into this folder. These should be automated tests for the examples in the `examples` folder. 
 
 ## Monorepo vs. polyrepo
 

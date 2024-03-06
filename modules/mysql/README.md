@@ -1,4 +1,4 @@
-# MySQL on RDS Example
+# MySQL on RDS Module
 
 This is an example of how to use Terraform to deploy a MySQL database on top of [Amazon's Relational Database Service
 (RDS)](https://aws.amazon.com/rds/). See the [root README](/README.md) for instructions on how to run this example code. 
