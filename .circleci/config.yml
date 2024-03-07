@@ -1,0 +1,129 @@
+version: 2.1
+env: &env
+  environment:
+    GO111MODULE: auto
+    # The GOPRIVATE environment variable controls which modules the go command considers to be private
+    # (not available publicly) and should therefore not use the proxy or checksum database.
+    # Without this, tests fail with a "410 Gone" error
+    GOPRIVATE: github.com/gruntwork-io
+defaults: &defaults
+  docker:
+    - image: 087285199408.dkr.ecr.us-east-1.amazonaws.com/circle-ci-test-image-base:go1.21-tf1.5-tg39.1-pck1.8-ci50.7
+  <<: *env
+terrascan: &terrascan
+  docker:
+    - image: "tenable/terrascan:1.18.3"
+run_precommit: &run_precommit
+  # Fail the build if the pre-commit hooks don't pass. Note: if you run $ pre-commit install locally within this repo, these hooks will
+  # execute automatically every time before you commit, ensuring the build never fails at this step!
+  name: run pre-commit hooks
+  command: |
+    pre-commit install
+    pre-commit run --all-files
+
+# ---------------------------------------------------------------------------------------------------------------------
+# REUSABLE STEPS
+# ---------------------------------------------------------------------------------------------------------------------
+
+commands:
+  store_results:
+    description: Store test results for easy viewing.
+    steps:
+      - run:
+          command: terratest_log_parser --testlog /tmp/logs/all.log --outputdir /tmp/logs
+          when: always
+      - store_artifacts:
+          path: /tmp/logs
+      - store_test_results:
+          path: /tmp/logs
+
+#----------------------------------------------------------------------------------------------------------------------
+# BUILD JOBS
+#----------------------------------------------------------------------------------------------------------------------
+
+jobs:
+  precommit:
+    <<: *defaults
+    resource_class: small
+    steps:
+      - checkout
+      # Fail the build if the pre-commit hooks don't pass. Note: if you run pre-commit install locally, these hooks will
+      # execute automatically every time before you commit, ensuring the build never fails at this step!
+      - run:
+          <<: *run_precommit
+
+  test:
+    <<: *defaults
+    steps:
+      - checkout
+      - run:
+          name: run tests
+          command: |
+            mkdir -p /tmp/logs
+            # Believe it or not, we've seen the tee command fail when we have too much logging all happening at once.
+            # To ensure that tee failing doesn't cause the whole test suite to fail, we add an || true.
+            run-go-tests --path ./test --timeout 2h --packages . | (tee /tmp/logs/all.log || true)
+          no_output_timeout: 3600s
+      - store_results
+
+  terrascan:
+    description: Run Terrascan
+    <<: *terrascan
+    steps:
+      - checkout
+      - run:
+          name: Run terrascan
+          command: |
+            # We only want to fail on violations, so we need to ignore exit code 4
+            # See https://runterrascan.io/docs/_print/#configuring-the-output-format-for-a-scan for information on terrascan exit codes.
+            terrascan scan -d ./modules --output json || (ec=$?; if [[ $ec != 0 ]]; then exit 0; else exit $ec; fi;)
+      - run:
+          name: Don't fail on non-zero exit code
+          command: |
+            # This test is informational at this time, so we are temporarily disabling this test from failing by ignoring exit codes.
+            # To enable terrascan tests, replace with this command: terrascan scan -d ./modules --output json || (ec=$?; if [[ $ec = 4 ]]; then exit 0; else exit $ec; fi;)
+            # and remove this run stage.
+          no_output_timeout: 3600s
+
+#----------------------------------------------------------------------------------------------------------------------
+# WORKFLOWS
+#----------------------------------------------------------------------------------------------------------------------
+
+workflows:
+  version: 2.1
+  test:
+    jobs:
+      - precommit:
+          filters:
+            tags:
+              only: /^v.*/
+          context:
+            - AWS__PHXDEVOPS__circle-ci-test
+            - GITHUB__PAT__gruntwork-ci
+      - test:
+          requires:
+            - precommit
+          filters:
+            tags:
+              only: /^v.*/
+          context:
+            - AWS__PHXDEVOPS__circle-ci-test
+            - GITHUB__PAT__gruntwork-ci
+  scan:
+    jobs:
+      - precommit:
+          context:
+            - AWS__PHXDEVOPS__circle-ci-test
+            - GITHUB__PAT__gruntwork-ci
+          filters:
+            tags:
+              only: /^v.*/
+      - terrascan:
+          context:
+            - AWS__PHXDEVOPS__circle-ci-test
+            - GITHUB__PAT__gruntwork-ci
+          requires:
+            - precommit
+          filters:
+            tags:
+              only: /^v.*/
