@@ -1,11 +1,3 @@
-# ---------------------------------------------------------------------------------------------------------------------
-# A SIMPLE EXAMPLE OF HOW TO DEPLOY MYSQL ON RDS
-# This is an example of how to use Terraform to deploy a MySQL database on Amazon RDS.
-#
-# Note: This code is meant solely as a simple demonstration of how to lay out your files and folders with Terragrunt
-# in a way that keeps your Terraform code DRY. This is not production-ready code, so use at your own risk.
-# ---------------------------------------------------------------------------------------------------------------------
-
 terraform {
   required_version = ">= 1.1"
 
