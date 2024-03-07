@@ -27,5 +27,5 @@ func TestEcsFargateService(t *testing.T) {
 	terraform.InitAndApply(t, terraformOptions)
 
 	url := terraform.Output(t, terraformOptions, "url")
-	http_helper.HttpGetWithRetry(t, url, nil, 200, "Hello, World!", 30, 5*time.Second)
+	http_helper.HttpGetWithRetry(t, url, nil, 200, "Hello World!", 30, 5*time.Second)
 }
