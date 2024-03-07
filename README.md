@@ -63,10 +63,6 @@ Check out the [terragrunt-infrastructure-live-example
 repo](https://github.com/gruntwork-io/terragrunt-infrastructure-live-example) for examples and the [Keep your 
 code DRY documentation](https://github.com/gruntwork-io/terragrunt#keep-your-terraform-code-dry) for more info.
 
-
-
-
-
 ## How do you change a module?
 
 
