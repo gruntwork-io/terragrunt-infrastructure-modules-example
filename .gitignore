@@ -1,8 +1,9 @@
-# Terraform
+# Terraform/OpenTofu
 .terraform
 terraform.tfvars
 *.tfstate
 *.tfstate.backup
+*.tfstate.lock.info
 
 # OS X
 .history
@@ -18,6 +19,9 @@ build/
 */build/
 out/
 
-# Ignore Terraform lock files, as we want to test the Terraform code in these repos with the latest provider
+# Ignore Terraform/OpenTofu lock files, as we want to test the Terraform code in these repos with the latest provider
 # versions.
 .terraform.lock.hcl
+
+# Lambda deployment packages
+*.zip

@@ -1,7 +1,6 @@
-variable "aws_region" {
-  description = "The AWS region to deploy to (e.g. us-east-1)"
-  type        = string
-}
+# ---------------------------------------------------------------------------------------------------------------------
+# REQUIRED VARIABLES
+# ---------------------------------------------------------------------------------------------------------------------
 
 variable "name" {
   description = "The name for the ASG. This name is also used to namespace all the other resources created by this module."
@@ -28,7 +27,11 @@ variable "server_port" {
   type        = number
 }
 
-variable "elb_port" {
-  description = "The port number the ELB should listen on for HTTP requests"
+variable "alb_port" {
+  description = "The port number the ALB should listen on for HTTP requests"
   type        = number
 }
+
+# ---------------------------------------------------------------------------------------------------------------------
+# OPTIONAL VARIABLES
+# ---------------------------------------------------------------------------------------------------------------------
