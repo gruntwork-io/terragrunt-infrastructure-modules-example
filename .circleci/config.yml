@@ -1,4 +1,5 @@
 version: 2.1
+
 env: &env
   environment:
     GO111MODULE: auto
@@ -6,13 +7,16 @@ env: &env
     # (not available publicly) and should therefore not use the proxy or checksum database.
     # Without this, tests fail with a "410 Gone" error
     GOPRIVATE: github.com/gruntwork-io
+
 defaults: &defaults
   docker:
     - image: 087285199408.dkr.ecr.us-east-1.amazonaws.com/circle-ci-test-image-base:go1.21-tf1.5-tg39.1-pck1.8-ci50.7
   <<: *env
+
 terrascan: &terrascan
   docker:
     - image: "tenable/terrascan:1.18.3"
+
 run_precommit: &run_precommit
   # Fail the build if the pre-commit hooks don't pass. Note: if you run $ pre-commit install locally within this repo, these hooks will
   # execute automatically every time before you commit, ensuring the build never fails at this step!
@@ -20,6 +24,14 @@ run_precommit: &run_precommit
   command: |
     pre-commit install
     pre-commit run --all-files
+
+# TODO: in the future, we need to bake OpenTofu into circle-ci-test-image-base
+install_tofu: &install_tofu
+  name: Install OpenTofu
+  command: |
+    curl --proto '=https' --tlsv1.2 -fsSL https://get.opentofu.org/install-opentofu.sh -o install-opentofu.sh
+    chmod +x install-opentofu.sh
+    ./install-opentofu.sh --install-method deb
 
 # ---------------------------------------------------------------------------------------------------------------------
 # REUSABLE STEPS
@@ -56,6 +68,8 @@ jobs:
     <<: *defaults
     steps:
       - checkout
+      - run:
+          <<: *install_tofu
       - run:
           name: run tests
           command: |
