@@ -2,6 +2,7 @@ package test
 
 import (
 	"fmt"
+	"strings"
 	"testing"
 
 	"github.com/gruntwork-io/terratest/modules/random"
@@ -16,7 +17,7 @@ func TestS3Bucket(t *testing.T) {
 		TerraformDir:    "../examples/s3-bucket",
 		TerraformBinary: "tofu",
 		Vars: map[string]interface{}{
-			"name": fmt.Sprintf("terragrunt-infrastructure-modules-examples-test-%s", random.UniqueId()),
+			"name": fmt.Sprintf("terragrunt-infrastructure-modules-examples-test-%s", strings.ToLower(random.UniqueId())),
 		},
 	}
 
