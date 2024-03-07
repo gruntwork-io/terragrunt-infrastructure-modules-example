@@ -1,4 +1,4 @@
-# ASG with ALB example
+# ASG with ALB Example
 
 This is an example of how to use the [asg-alb-service module](/modules/asg-alb-service).
 

@@ -1,4 +1,4 @@
-# MySQL on RDS example
+# MySQL on RDS Example
 
 This is an example of how to use the [mysql module](/modules/mysql).
 
