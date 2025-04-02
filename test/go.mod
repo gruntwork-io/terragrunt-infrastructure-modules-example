@@ -1,6 +1,7 @@
 module github.com/gruntwork-io/terragrunt-infrastructure-modules-example
 
-go 1.21.4
+go 1.23.0
+
 toolchain go1.23.7
 
 require github.com/gruntwork-io/terratest v0.46.11
