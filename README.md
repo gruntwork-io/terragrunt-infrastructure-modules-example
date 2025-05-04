@@ -1,33 +1,34 @@
 [![Maintained by Gruntwork.io](https://img.shields.io/badge/maintained%20by-gruntwork.io-%235849a6.svg)](https://gruntwork.io/?ref=repo_terragrunt-infra-modules-example)
 
+> [!WARNING]
+> This repository has been deprecated in favor of [terragrunt-infrastructure-catalog-example](https://github.com/gruntwork-io/terragrunt-infrastructure-catalog-example). Please use the new repository for the latest best practices and features.
+>
+> Take special notice of the [Migration Guide](https://github.com/gruntwork-io/terragrunt-infrastructure-catalog-example/blob/main/docs/migration-guide.md) specifically written to help you migrate from using this repo to the new one.
+
 # Example infrastructure-modules for Terragrunt
 
-This repo, along with the [terragrunt-infrastructure-live-example 
+This repo, along with the [terragrunt-infrastructure-live-example
 repo](https://github.com/gruntwork-io/terragrunt-infrastructure-live-example), show an example file/folder structure
-you can use with [Terragrunt](https://github.com/gruntwork-io/terragrunt) to keep your 
-[Terraform](https://www.terraform.io) and [OpenTofu](https://opentofu.org/) code DRY. For background information, check 
-out the [Keep your code DRY](https://github.com/gruntwork-io/terragrunt#keep-your-terraform-code-dry) section 
+you can use with [Terragrunt](https://github.com/gruntwork-io/terragrunt) to keep your
+[Terraform](https://www.terraform.io) and [OpenTofu](https://opentofu.org/) code DRY. For background information, check
+out the [Keep your code DRY](https://github.com/gruntwork-io/terragrunt#keep-your-terraform-code-dry) section
 of the Terragrunt documentation.
 
 This repo contains the following example modules:
 
-* [asg-alb-service](/modules/asg-alb-service): An example of how to deploy an Auto Scaling Group (ASG) with an 
-  Application Load Balancer (ALB) in front of it. We run a dirt-simple "web server" on top of the ASG that always 
+* [asg-alb-service](/modules/asg-alb-service): An example of how to deploy an Auto Scaling Group (ASG) with an
+  Application Load Balancer (ALB) in front of it. We run a dirt-simple "web server" on top of the ASG that always
   returns "Hello, World".
 
-* [mysql](/modules/mysql): An example of how to deploy MySQL on top of Amazon's Relational Database Service (RDS).  
+* [mysql](/modules/mysql): An example of how to deploy MySQL on top of Amazon's Relational Database Service (RDS).
 
-Note: This code is solely for demonstration purposes. This is not production-ready code, so use at your own risk. If 
-you are interested in battle-tested, production-ready Terraform and OpenTofu code, check out 
+Note: This code is solely for demonstration purposes. This is not production-ready code, so use at your own risk. If
+you are interested in battle-tested, production-ready Terraform and OpenTofu code, check out
 [Gruntwork](http://www.gruntwork.io/).
-
-
-
-
 
 ## How do you use these modules?
 
-To use a module, create a  `terragrunt.hcl` file that specifies the module you want to use in the `source` URL as well 
+To use a module, create a  `terragrunt.hcl` file that specifies the module you want to use in the `source` URL as well
 as values for the input variables of that module in the `inputs` block:
 
 ```hcl
@@ -43,12 +44,12 @@ inputs = {
 }
 ```
 
-(*Note: the double slash (`//`) in the `source` URL is intentional and required. It's part of Terraform and OpenTofu's 
+(*Note: the double slash (`//`) in the `source` URL is intentional and required. It's part of Terraform and OpenTofu's
 Git syntax for [module sources](https://www.terraform.io/docs/modules/sources.html).*)
 
-You then run [Terragrunt](https://github.com/gruntwork-io/terragrunt), and it will download the source code specified 
+You then run [Terragrunt](https://github.com/gruntwork-io/terragrunt), and it will download the source code specified
 in the `source` URL into a temporary folder, copy your `terragrunt.hcl` file into that folder, and run your Terraform /
-OpenTofu command in that folder: 
+OpenTofu command in that folder:
 
 ```
 > terragrunt apply
@@ -59,8 +60,8 @@ OpenTofu command in that folder:
 [...]
 ```
 
-Check out the [terragrunt-infrastructure-live-example 
-repo](https://github.com/gruntwork-io/terragrunt-infrastructure-live-example) for examples and the [Keep your 
+Check out the [terragrunt-infrastructure-live-example
+repo](https://github.com/gruntwork-io/terragrunt-infrastructure-live-example) for examples and the [Keep your
 code DRY documentation](https://github.com/gruntwork-io/terragrunt#keep-your-terraform-code-dry) for more info.
 
 ## How do you change a module?
@@ -72,15 +73,14 @@ Here is how to test out changes to a module locally:
 
 1. `git clone` this repo.
 1. Update the code as necessary.
-1. Go into the folder where you have the `terragrunt.hcl` file that uses a module from this repo (preferably for a 
+1. Go into the folder where you have the `terragrunt.hcl` file that uses a module from this repo (preferably for a
    dev or staging environment!).
 1. Run `terragrunt plan --terragrunt-source <LOCAL_PATH>`, where `LOCAL_PATH` is the path to your local checkout of
-   the module code. 
-1. If the plan looks good, run `terragrunt apply --terragrunt-source <LOCAL_PATH>`.   
+   the module code.
+1. If the plan looks good, run `terragrunt apply --terragrunt-source <LOCAL_PATH>`.
 
-Using the `--terragrunt-source` parameter (or `TERRAGRUNT_SOURCE` environment variable) allows you to do rapid, 
+Using the `--terragrunt-source` parameter (or `TERRAGRUNT_SOURCE` environment variable) allows you to do rapid,
 iterative, make-a-change-and-rerun development.
-
 
 ### Releasing a new version
 
@@ -92,30 +92,31 @@ When you're done testing the changes locally, here is how you release a new vers
     1. Using GitHub: Go to the [releases page](/releases) and click "Draft a new release".
     1. Using Git:
 
-    ```
+    ```bash
     git tag -a v0.0.2 -m "tag message"
     git push --follow-tags
     ```
+
 1. Now you can use the new Git tag (e.g. `v0.0.2`) in the `ref` attribute of the `source` URL in `terragrunt.hcl`.
 1. Run `terragrunt plan`.
-1. If the plan looks good, run `terragrunt apply`.   
+1. If the plan looks good, run `terragrunt apply`.
 
 ## Folder structure
 
 This repo uses the following "standard" folder structure:
 
-- `modules`: Put module code into this folder.
-- `examples`: Put example code into this folder. These are examples of how to use the modules in the `modules` folder.
+* `modules`: Put module code into this folder.
+* `examples`: Put example code into this folder. These are examples of how to use the modules in the `modules` folder.
   This is useful both for manual testing (you can manually run `tofu apply` on these examples) and automated testing
   (as per the tests in the `test` folder, as described next).
-- `test`: Put test code into this folder. These should be automated tests for the examples in the `examples` folder. 
+* `test`: Put test code into this folder. These should be automated tests for the examples in the `examples` folder.
 
 ## Monorepo vs. polyrepo
 
-This repo is an example of a *monorepo*, where you have multiple modules in a single repository. There are benefits and 
-drawbacks to using a monorepo vs. using a *polyrepo* - one module per repository. Which you choose depends on your 
-tooling, how you build/test Terraform/OpenTofu modules, and so on. Regardless, the 
-[live repo](https://github.com/gruntwork-io/terragrunt-infrastructure-live-example) will consume the modules in the 
+This repo is an example of a *monorepo*, where you have multiple modules in a single repository. There are benefits and
+drawbacks to using a monorepo vs. using a *polyrepo* - one module per repository. Which you choose depends on your
+tooling, how you build/test Terraform/OpenTofu modules, and so on. Regardless, the
+[live repo](https://github.com/gruntwork-io/terragrunt-infrastructure-live-example) will consume the modules in the
 same way: a reference to a Git release tag in a `terragrunt.hcl` file.
 
 ### Advantages of a monorepo for Terraform/OpenTofu modules
